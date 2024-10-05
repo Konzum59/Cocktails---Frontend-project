@@ -1,0 +1,24 @@
+/* App.css */
+body {
+  /*margin: 0;
+  /*padding: 0;
+  /*display: flex;
+  /*justify-content: center; /* Wycentruj poziomo */
+  /*align-items: center; /* Wycentruj pionowo */
+  /*height: 100vh; /* Pełna wysokość widoku */
+  /*text-align: center; /* Wycentruj tekst w kontenerze */
+  /*font-family: Arial, sans-serif; */
+  text-align: center;
+}
+
+#root {
+  width: 100%; /* Dopasuj szerokość do okna */
+  /*display: flex;*/
+  justify-content: center; /* Wycentruj poziomo zawartość */
+  align-items: center; /* Wycentruj pionowo zawartość */
+}
+
+.container {
+  text-align: center; /* Wycentruj tekst wewnątrz komponentu */
+  max-width: 600px; /* Opcjonalnie: ustaw maksymalną szerokość */
+}
