@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import PaginatedButtons from "./PaginatedButtons";
+import PageButtons from "./PageButtons";
 import LoadingOrError from "./LoadingOrError";
-import CocktailItem from "./CocktailItem";
-
+import CocktailIngredients from "./CocktailIngredients";
+import madGif from "./assets/images/NecoArcMad.gif";
 interface CocktailsComponentProps {
   saveCocktail: (id: number) => void;
   favorites: number[];
   isFavoriteList?: boolean;
+  searchTerm: string;
+  pageNumber: number;
+  setPageNumber: (page: number) => void;
+  isAlcoholicFilter: boolean | null;
 }
 interface Meta {
   total: number;
@@ -40,15 +44,18 @@ const CocktailsComponent: React.FC<CocktailsComponentProps> = ({
   saveCocktail,
   favorites,
   isFavoriteList = false,
+  searchTerm,
+  pageNumber,
+  setPageNumber,
+  isAlcoholicFilter,
 }) => {
   const [cocktails, setCocktails] = useState<Cocktail[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [totalResults, setTotalResults] = useState<number>(0);
 
-  const maxPages = meta ? Math.ceil(meta.total / meta.perPage) : 0;
-
+  const maxPages: number = meta ? Math.ceil(meta.total / meta.perPage) : 0;
   const fetchCocktails = async (page: number) => {
     setLoading(true);
     try {
@@ -56,20 +63,32 @@ const CocktailsComponent: React.FC<CocktailsComponentProps> = ({
         `https://cocktails.solvro.pl/api/v1/cocktails?page=${page}&perPage=15`
       );
       if (isFavoriteList) {
-        const iAsumeThisWorksBecauseIDidntKnowHowToUseTheSearchOnTheSite =
-          favorites.map((id) => `id[]=${id}`).join("&");
+        const forLink: string = favorites.map((id) => `id[]=${id}`).join("&");
+        const filter: string | null =
+          isAlcoholicFilter !== null ? `&alcoholic=${isAlcoholicFilter}` : "";
+        console.log(
+          `https://cocktails.solvro.pl/api/v1/cocktails?${forLink}${filter}&page=${page}&perPage=15`
+        );
         response = await fetch(
-          `https://cocktails.solvro.pl/api/v1/cocktails?${iAsumeThisWorksBecauseIDidntKnowHowToUseTheSearchOnTheSite}&page=1&perPage=15`
+          `https://cocktails.solvro.pl/api/v1/cocktails?${forLink}${filter}&page=${page}&perPage=15`
         );
       }
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      if (searchTerm) {
+        response = await fetch(
+          `https://cocktails.solvro.pl/api/v1/cocktails?name=${searchTerm}&page=${page}&perPage=15`
+        );
+      }
+      if (isAlcoholicFilter !== null && !isFavoriteList) {
+        response = await fetch(
+          `https://cocktails.solvro.pl/api/v1/cocktails?alcoholic=${isAlcoholicFilter}&page=${page}&perPage=15`
+        );
       }
       const data: ApiResponse = await response.json();
       setCocktails(data.data);
       setMeta(data.meta);
+      setTotalResults(data.meta.total);
     } catch (error) {
-      setError("Error occurred while fetching data");
+      setError("Error, can't fetch the data");
     } finally {
       setLoading(false);
     }
@@ -77,31 +96,40 @@ const CocktailsComponent: React.FC<CocktailsComponentProps> = ({
 
   useEffect(() => {
     fetchCocktails(pageNumber);
-  }, [pageNumber, isFavoriteList]);
+  }, [pageNumber, isFavoriteList, searchTerm, isAlcoholicFilter]);
 
   const changePage = (page: number) => {
     setPageNumber(page);
   };
-
+  if (favorites.length == 0 && isFavoriteList) {
+    return (
+      <>
+        <h2>No favorites added, what are you waiting for, add some!!</h2>
+        <img src={madGif} />
+      </>
+    );
+  }
   return (
     <div>
-      <LoadingOrError loading={loading} error={error} />
-      {!loading && !error && (
+      <LoadingOrError loading={loading} error={error} results={totalResults} />
+      {!loading && !error && totalResults != 0 && (
         <>
-          <PaginatedButtons
+          <PageButtons
             currentPage={pageNumber}
             maxPages={maxPages}
             changePage={changePage}
           />
           {cocktails.map((cocktail) => (
-            <CocktailItem
+            <CocktailIngredients
               key={cocktail.id}
               cocktail={cocktail}
               saveCocktail={() => saveCocktail(cocktail.id)}
+              favorites={favorites}
+              resultsNumber={totalResults}
             />
           ))}
 
-          <PaginatedButtons
+          <PageButtons
             currentPage={pageNumber}
             maxPages={maxPages}
             changePage={changePage}

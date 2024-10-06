@@ -1,10 +1,12 @@
-interface PaginatedButtonsProps {
+//just for displaying buttons
+
+interface PageButtonsProps {
   currentPage: number;
   maxPages: number;
   changePage: (page: number) => void;
 }
 
-const PaginatedButtons: React.FC<PaginatedButtonsProps> = ({
+const PageButtons: React.FC<PageButtonsProps> = ({
   currentPage,
   maxPages,
   changePage,
@@ -26,4 +28,4 @@ const PaginatedButtons: React.FC<PaginatedButtonsProps> = ({
   );
 };
 
-export default PaginatedButtons;
+export default PageButtons;

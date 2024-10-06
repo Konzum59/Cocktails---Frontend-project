@@ -1,5 +1,5 @@
 import styles from "./IngredientData.module.css";
-
+//that one is called from IngredientDetails, when the mouse is over ingredient, and shows data
 interface IngredientDataProps {
   description: string;
   alcohol: boolean;

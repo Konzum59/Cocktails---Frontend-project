@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CocktailDetails from "./CocktailDetails";
+import IngredientsDetails from "./IngredientsDetails";
 
 interface Cocktail {
   id: number;
@@ -13,13 +13,17 @@ interface Cocktail {
   updatedAt: string;
 }
 
-interface CocktailItemProps {
+interface CocktailIngredientsProps {
   cocktail: Cocktail;
   saveCocktail: () => void;
+  favorites: number[];
+  resultsNumber: number;
 }
-const CocktailItem: React.FC<CocktailItemProps> = ({
+const CocktailIngredients: React.FC<CocktailIngredientsProps> = ({
   cocktail,
   saveCocktail,
+  favorites,
+  resultsNumber,
 }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const toggleDetails = () => {
@@ -34,15 +38,24 @@ const CocktailItem: React.FC<CocktailItemProps> = ({
       <p>
         {cocktail.alcoholic ? "Contains alcohol" : "Doesn't contain alcohol"}{" "}
       </p>
-      <button onClick={() => saveCocktail()}>Add to favorites</button>
+      <button onClick={() => saveCocktail()}>
+        {favorites.includes(cocktail.id)
+          ? "Remove from favorites"
+          : "Add to favorites"}
+      </button>
       {/*<p>Instructions: {cocktail.instructions}</p>*/}
       <img src={cocktail.imageUrl} alt={cocktail.name} />
       <button onClick={toggleDetails}>
         {expanded ? "Hide details" : "Show details"}
       </button>
-      {expanded && <CocktailDetails cocktailId={cocktail.id} />}
+      {expanded && (
+        <IngredientsDetails
+          cocktailId={cocktail.id}
+          resultsNumber={resultsNumber}
+        />
+      )}
     </div>
   );
 };
 
-export default CocktailItem;
+export default CocktailIngredients;

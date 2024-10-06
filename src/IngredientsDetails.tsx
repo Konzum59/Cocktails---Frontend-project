@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import LoadingOrError from "./LoadingOrError";
 import IngredientData from "./IngredientData/IngredientData";
 
+//This one shows stuff when the mouse is over ingredient. Now im i think thats it isnt really intuative to point your mouse on the ingredient to see details, amyby there should be some symbol to indicate that
+
 interface Ingredient {
   id: number;
   name: string;
@@ -13,11 +15,12 @@ interface Ingredient {
   measure: string;
 }
 
-interface CocktailDetailsProps {
+interface IngredientsDetailsProps {
   cocktailId: number;
+  resultsNumber: number;
 }
 
-interface CocktailDetailsResponse {
+interface IngredientsDetailsResponse {
   id: number;
   name: string;
   category: string;
@@ -30,8 +33,13 @@ interface CocktailDetailsResponse {
   ingredients: Ingredient[];
 }
 
-const CocktailDetails: React.FC<CocktailDetailsProps> = ({ cocktailId }) => {
-  const [details, setDetails] = useState<CocktailDetailsResponse | null>(null);
+const IngredientsDetails: React.FC<IngredientsDetailsProps> = ({
+  cocktailId,
+  resultsNumber,
+}) => {
+  const [details, setDetails] = useState<IngredientsDetailsResponse | null>(
+    null
+  );
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isOver, setIsOver] = useState<Ingredient | null>(null);
@@ -42,9 +50,6 @@ const CocktailDetails: React.FC<CocktailDetailsProps> = ({ cocktailId }) => {
         const response = await fetch(
           `https://cocktails.solvro.pl/api/v1/cocktails/${cocktailId}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch cocktail details");
-        }
         const data = await response.json();
         setDetails(data.data);
       } catch (error) {
@@ -59,14 +64,14 @@ const CocktailDetails: React.FC<CocktailDetailsProps> = ({ cocktailId }) => {
 
   return (
     <div>
-      <LoadingOrError loading={loading} error={error} />
+      <LoadingOrError loading={loading} error={error} results={resultsNumber} />
       {details && (
         <>
           <hr></hr>
           <h3>{details.name}</h3>
           <p>Category: {details.category}</p>
           <p>Glass: {details.glass}</p>
-          <h4>Ingredients:</h4>
+          <p>Ingredients:</p>
           <ul>
             {details.ingredients.map((ingredient) => (
               <li key={ingredient.id}>
@@ -75,7 +80,9 @@ const CocktailDetails: React.FC<CocktailDetailsProps> = ({ cocktailId }) => {
                   onMouseEnter={() => setIsOver(ingredient)}
                   onMouseLeave={() => setIsOver(null)}
                 >
-                  {ingredient.name} - {ingredient.measure}
+                  <strong>
+                    {ingredient.name} - {ingredient.measure}{" "}
+                  </strong>
                   {isOver === ingredient ? (
                     <IngredientData
                       description={ingredient.description}
@@ -99,4 +106,4 @@ const CocktailDetails: React.FC<CocktailDetailsProps> = ({ cocktailId }) => {
   );
 };
 
-export default CocktailDetails;
+export default IngredientsDetails;
