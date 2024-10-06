@@ -5,6 +5,7 @@ import CocktailsComponent from "./CocktailsComponent";
 //general component, or atleast it was suposed to be, but i put too much code in here
 //i wanted to change it for more smaller components but it went a bit too messy. Generally sorry for the mess in components and  all, it was my first bigger project with react adn generally with frontend. also i really need to learn css
 //and sorry for submiting it so late, i pinkie promie i wasnt doing it all in one day, i divided for some 4/5 evenings and just tought that it will take me less time today, but i saw more and more things that could get improved
+//also at some point i created a new project and copied everything because i had some issues 
 function App() {
   const storedFavorites = localStorage.getItem("arrayOfFavorites");
   const [searchTerm, setSearchTerm] = useState<string>("");
