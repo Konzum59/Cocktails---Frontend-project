@@ -1,24 +1,13 @@
-/* App.css */
+/*I wanted to make all the site functions firs, and then do the styling. So it was suposed to be here temporary, until i would actually do the styling myself, but after all i wasn't able to do much of styling, and i just left it here. I really really need to learn more css */
+
 body {
-  /*margin: 0;
-  /*padding: 0;
-  /*display: flex;
-  /*justify-content: center; /* Wycentruj poziomo */
-  /*align-items: center; /* Wycentruj pionowo */
-  /*height: 100vh; /* Pełna wysokość widoku */
-  /*text-align: center; /* Wycentruj tekst w kontenerze */
-  /*font-family: Arial, sans-serif; */
   text-align: center;
 }
 
 #root {
-  width: 100%; /* Dopasuj szerokość do okna */
-  /*display: flex;*/
-  justify-content: center; /* Wycentruj poziomo zawartość */
-  align-items: center; /* Wycentruj pionowo zawartość */
+  width: 100%; 
+  justify-content: center; 
+  align-items: center; 
 }
 
-.container {
-  text-align: center; /* Wycentruj tekst wewnątrz komponentu */
-  max-width: 600px; /* Opcjonalnie: ustaw maksymalną szerokość */
-}
+
